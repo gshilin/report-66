@@ -272,7 +272,8 @@ class Playlist
             @playlisttc = end_time
           when /^#EVENT WAIT\s+(.*)/, /^#LIVE_STREAM LIVE.+;(.*)/
             puts line if $super_verbose
-            end_time = live_performer + $1.to_f
+
+            end_time = @playlisttc + $1.to_f
 
             @event.name          = MORNING_LESSON.cover?(@playlisttc.strftime('%H:%M:00')) ? 'שיעור בוקר' : 'שידור חי'
             @event.title         = 'שידור חי'
@@ -286,7 +287,7 @@ class Playlist
             @playlisttc = end_time
           when /^"/ # Last line of block
             puts line if $super_verbose
-            parts = line.split('; ')
+            parts = line.split(/;(?:\s)?/)
 
             long              = File.basename(parts[0].split('"')[1].split('\\').last, '.mpg')
             play_time_trimmed = parts[1].to_f
@@ -323,7 +324,6 @@ class Playlist
             @event.print_row @playlisttc
 
             @playlisttc += play_time
-          else
         end
       end
     end
